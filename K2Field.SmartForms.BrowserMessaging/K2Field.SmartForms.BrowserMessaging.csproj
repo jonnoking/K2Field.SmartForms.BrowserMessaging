@@ -115,7 +115,9 @@
     <EmbeddedResource Include="BrowserMessagingSendControl\BrowserMessagingSendControl_Stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BrowserMessagingReceiveControl\BrowserMessagingReceiveControl_Definition.xml" />
+    <EmbeddedResource Include="BrowserMessagingReceiveControl\BrowserMessagingReceiveControl_Definition.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BrowserMessagingReceiveControl\BrowserMessagingReceiveControl_Script.js" />

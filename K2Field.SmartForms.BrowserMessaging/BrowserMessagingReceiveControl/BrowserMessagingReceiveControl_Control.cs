@@ -33,17 +33,17 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
         //create get/set methods and return the property of the same name but to lower case
 
         //in this example, we are exposing the <Prop ID="ControlText"> property from the definition.xml file to the code-behind
-        public string ControlText
-        {
-            get
-            {
-                return this.Attributes["controltext"];
-            }
-            set
-            {
-                this.Attributes["controltext"] = value;
-            }
-        }
+        //public string ControlText
+        //{
+        //    get
+        //    {
+        //        return this.Attributes["controltext"];
+        //    }
+        //    set
+        //    {
+        //        this.Attributes["controltext"] = value;
+        //    }
+        //}
 
         //IsVisible property
         public bool IsVisible
@@ -79,18 +79,17 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
             set { this.Attributes["value"] = value; }
         }
 
-        //IsVisible property
-        public bool OutputDebugInfo
-        {
-            get
-            {
-                return this.GetOption<bool>("outputdebuginfo", true);
-            }
-            set
-            {
-                this.SetOption<bool>("outputdebuginfo", value, true);
-            }
-        }
+        //public bool OutputDebugInfo
+        //{
+        //    get
+        //    {
+        //        return this.GetOption<bool>("outputdebuginfo", true);
+        //    }
+        //    set
+        //    {
+        //        this.SetOption<bool>("outputdebuginfo", value, true);
+        //    }
+        //}
 
 
         public string MessageId
@@ -116,17 +115,28 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
                 this.Attributes["messagetype"] = value;
             }
         }
-        public bool Rebroadcast
+        public string MessageDateTime
+        {
+            get
+            {
+                return this.Attributes["messagedatetime"];
+            }
+            set
+            {
+                this.Attributes["messagedatetime"] = value;
+            }
+        }
+        public bool Broadcast
         {
             get
             {
                 bool re = false;
-                bool.TryParse(this.Attributes["rebroadcast"], out re);
+                bool.TryParse(this.Attributes["broadcast"], out re);
                 return re;
             }
             set
             {
-                this.Attributes["rebroadcast"] = value.ToString();
+                this.Attributes["broadcast"] = value.ToString();
             }
         }
         public string Callback
@@ -213,14 +223,16 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
                     //do any runtime manipulation here
                     this.Attributes.Add("enabled", this.IsEnabled.ToString());
                     this.Attributes.Add("visible", this.IsVisible.ToString());
+                    this.Attributes.Add("style", "display:none;");
                     break;
             }
+            this.Controls.Add(AddLabelControlWithControlProperties());
 
             //if outputting the debug info for the control, add the literal control to the controls collection
-            if (OutputDebugInfo)
-            {
-                this.Controls.Add(AddLabelControlWithControlProperties());
-            }
+            //if (OutputDebugInfo)
+            //{
+            //    this.Controls.Add(AddLabelControlWithControlProperties());
+            //}
 
             // Call base implementation last
             base.CreateChildControls();
@@ -240,6 +252,7 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
         private LiteralControl AddLabelControlWithControlProperties()
         {
             Label propertiesLabel = new Label();
+            string id = string.Empty;
             //populate the value of the label control with the properties of your custom control
             switch (base.State)
             {
@@ -251,7 +264,7 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl
                     propertiesLabel.Text = "[ Send Message Receive ]";
                     break;
                 case SourceCode.Forms.Controls.Web.Shared.ControlState.Runtime:
-                    propertiesLabel.ID = this.ID + "_propertiesLabel";
+                    id = this.ID + "_propertiesLabel";
                     //propertiesLabel.Text = "(" + this.GetType().FullName + " - Runtime) " +
                     //    System.Environment.NewLine + "Control Text: " + this.ControlText +
                     //    System.Environment.NewLine + "Control Value: " + this.Value +

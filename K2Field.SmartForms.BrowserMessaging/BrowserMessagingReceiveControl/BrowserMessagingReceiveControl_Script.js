@@ -109,7 +109,37 @@
             });
 
             StyleHelper.setStyles(options, styles);
-        }
+        },
+
+        execute: function (objInfo) {
+            //debugger;
+            // The control id can be retrieved as follows
+            var controlId = objInfo.CurrentControlID;
+
+            var instance = K2Field.SmartForms.BrowserMessaging.BrowserMessagingReceiveControl._getInstance(objInfo.CurrentControlID);
+
+            // methodParameters is an object mapping the property names to their values
+            var parameters = objInfo.methodParameters;
+
+            var parameterNames = [];
+            var method = objInfo.methodName;
+
+            switch (method) {
+                case "clearmessage":
+                    instance.value = "";
+                    $(instance).attr("messageid", "");
+                    $(instance).attr("messagetype", "");
+                    $(instance).attr("fromurl", "");
+                    $(instance).attr("messagedatetime", "");
+                    $(instance).attr("callback", "");
+                    $(instance).attr("broadcast", "");
+
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnMessageCleared');
+                    break;
+            }
+            return data;
+        },
+
     };
 })(jQuery);
 
@@ -131,9 +161,17 @@ $(document).ready(function () {
     //});
 
 
-    window.addEventListener('message', function (e) {
+    if (window.attachEvent) {
+        attachEvent("onmessage", receiveMessage);
+    } else {
+
+        window.addEventListener("message", receiveMessage, false);
+    }
+
+    function receiveMessage(e) {
         var data = e.data;
         var origin = e.origin;
+        console.log("MESSAGE RECEIVED: " + data);
         if (data.substring(0, 1) === '{') {
             var d = JSON.parse(e.data);
 
@@ -144,55 +182,61 @@ $(document).ready(function () {
 
             //var controlOptions = jQuery.parseJSON($("#" + id).attr("data-options"));
 
-            if (d.messageType) {
+            if (d.hasOwnProperty("messageType")) {
                 $("#" + id).attr("messagetype", d.messageType);
                 //controlOptions.messageType = d.messageType;
             }
 
-            if (d.messageId) {
+            if (d.hasOwnProperty("messageId")) {
                 $("#" + id).attr("messageid", d.messageId);
                 //controlOptions.messageId = d.messageId;
             }
 
-            if (d.fromUrl) {
+            if (d.hasOwnProperty("fromUrl")) {
                 $("#" + id).attr("fromurl", d.fromUrl);
                 //controlOptions.fromUrl = d.fromUrl;
             }
 
-            if (d.callback) {
+            if (d.hasOwnProperty("callback")) {
                 $("#" + id).attr("callback", d.callback);
                 //controlOptions.callback = d.callback;
             }
 
-            if (d.rebroadcast) {
-                $("#" + id).attr("rebroadcast", d.rebroadcast);
+            if (d.hasOwnProperty("broadcast")) {
+                $("#" + id).attr("broadcast", d.rebroadcast);
                 //controlOptions.callback = d.callback;
             }
+
+
+            if (d.hasOwnProperty("messageDateTime")) {
+                $("#" + id).attr("messagedatetime", d.messageDateTime);
+                //controlOptions.callback = d.callback;
+            }
+
             //$("#" + id).attr("data-options", JSON.stringify(controlOptions));
 
 
             //$(id).attr("value", d.message);
             raiseEvent(id, 'Control', 'OnMessageReceived');
 
+            if (d.hasOwnProperty("broadcast")) {
+                if (d.broadcast == "true" || d.broadcast == true) {
+                    var frames = $('iframe');
 
-            if (d.rebroadcast === true) {
-                var frames = $('iframe');
-
-                for (var i = 0; i < frames.length; i++) {
-                    frames[i].contentWindow.postMessage(JSON.stringify(msg), '*');
+                    for (var i = 0; i < frames.length; i++) {
+                        frames[i].contentWindow.postMessage(data, '*');
+                    }
                 }
             }
 
         } else {
-
-
-
+            // broadcast strings
+            var frames = $('iframe');
+            for (var i = 0; i < frames.length; i++) {
+                frames[i].contentWindow.postMessage(data, '*');
+            }
         }
 
-
-
-    }, false);
-
-
+    }
 
 });

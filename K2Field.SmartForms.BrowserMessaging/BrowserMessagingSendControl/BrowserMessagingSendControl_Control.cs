@@ -33,17 +33,17 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl
         //create get/set methods and return the property of the same name but to lower case
 
         //in this example, we are exposing the <Prop ID="ControlText"> property from the definition.xml file to the code-behind
-        public string ControlText
-        {
-            get
-            {
-                return this.Attributes["controltext"];
-            }
-            set
-            {
-                this.Attributes["controltext"] = value;
-            }
-        }
+        //public string ControlText
+        //{
+        //    get
+        //    {
+        //        return this.Attributes["controltext"];
+        //    }
+        //    set
+        //    {
+        //        this.Attributes["controltext"] = value;
+        //    }
+        //}
 
         public string MessageId
         {
@@ -68,17 +68,28 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl
                 this.Attributes["messagetype"] = value;
             }
         }
+        //public string MessageDateTime
+        //{
+        //    get
+        //    {
+        //        return this.Attributes["messagedatetime"];
+        //    }
+        //    set
+        //    {
+        //        this.Attributes["messagedatetime"] = value;
+        //    }
+        //}
         public bool Rebroadcast
         {
             get
             {
                 bool re = false;
-                bool.TryParse(this.Attributes["rebroadcast"], out re);
+                bool.TryParse(this.Attributes["broadcast"], out re);
                 return re;
             }
             set
             {
-                this.Attributes["rebroadcast"] = value.ToString();
+                this.Attributes["broadcast"] = value.ToString();
             }
         }
         public string Callback
@@ -92,17 +103,17 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl
                 this.Attributes["callback"] = value;
             }
         }
-        public string FromUrl
-        {
-            get
-            {
-                return this.Attributes["fromurl"];
-            }
-            set
-            {
-                this.Attributes["fromurl"] = value;
-            }
-        }
+        //public string FromUrl
+        //{
+        //    get
+        //    {
+        //        return this.Attributes["fromurl"];
+        //    }
+        //    set
+        //    {
+        //        this.Attributes["fromurl"] = value;
+        //    }
+        //}
 
 
         //IsVisible property
@@ -139,18 +150,17 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl
             set { this.Attributes["value"] = value; }
         }
 
-        //IsVisible property
-        public bool OutputDebugInfo
-        {
-            get
-            {
-                return this.GetOption<bool>("outputdebuginfo", true);
-            }
-            set
-            {
-                this.SetOption<bool>("outputdebuginfo", value, true);
-            }
-        }
+        //public bool OutputDebugInfo
+        //{
+        //    get
+        //    {
+        //        return this.GetOption<bool>("outputdebuginfo", true);
+        //    }
+        //    set
+        //    {
+        //        this.SetOption<bool>("outputdebuginfo", value, true);
+        //    }
+        //}
 
         #region IDs
         public string ControlID
@@ -213,15 +223,15 @@ namespace K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl
                     //do any runtime manipulation here
                     this.Attributes.Add("enabled", this.IsEnabled.ToString());
                     this.Attributes.Add("visible", this.IsVisible.ToString());
-                    
+                    this.Attributes.Add("style", "display:none;");
                     break;
             }
-
+            this.Controls.Add(AddLabelControlWithControlProperties());
             //if outputting the debug info for the control, add the literal control to the controls collection
-            if (OutputDebugInfo)
-            {
-                this.Controls.Add(AddLabelControlWithControlProperties());
-            }
+            //if (OutputDebugInfo)
+            //{
+            //    this.Controls.Add(AddLabelControlWithControlProperties());
+            //}
 
             // Call base implementation last
             base.CreateChildControls();

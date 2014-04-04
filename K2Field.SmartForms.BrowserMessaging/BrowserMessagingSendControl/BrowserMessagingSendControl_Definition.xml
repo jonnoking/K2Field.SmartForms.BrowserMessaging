@@ -63,12 +63,130 @@ See the file below for samples and descriptions of the values you may have in th
       Event handlers for non-standard JQuery events must be implemented in the control's .js file
   -->
   <Events>
-    <Event>OnChange</Event>
+    <Event>OnMessageSent</Event>
   </Events>
   
   <!--<DefaultEventName> is the default event that the Rules composer will select when the designer creates a rule for the control-->
-  <DefaultEventName>OnChange</DefaultEventName>
- 
+  <DefaultEventName>OnMessageSent</DefaultEventName>
+
+  <!--<ExecuteMethod> is the name of a .js method called when a Rule Action calls a Method on the Control-->
+  <ExecuteMethod>K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl.execute</ExecuteMethod>
+  <!--<Methods> lists the available methods that the control exposes to Rule Actions-->
+  <Methods>
+    <Method ResultType="Text">
+      <Name>sendmessagetoparent</Name>
+      <DisplayName>Send Message To Parent</DisplayName>
+      <Description>Send message to parent frame via postMessage</Description>
+      <Parameters>
+        <Parameter DataType="Text">
+          <Name>message</Name>
+          <DisplayName>Message</DisplayName>
+          <Description>Message</Description>
+          <IsRequired>true</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messagetype</Name>
+          <DisplayName>Message Type</DisplayName>
+          <Description>Message Type</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messageid</Name>
+          <DisplayName>Message Id</DisplayName>
+          <Description>Message Id</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Boolean">
+          <Name>broadcast</Name>
+          <DisplayName>Broadcast</DisplayName>
+          <Description>Broadcast</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>callback</Name>
+          <DisplayName>Callback</DisplayName>
+          <Description>JavaScript message to be called on receiving page</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+      </Parameters>
+    </Method>
+    <Method ResultType="Text">
+      <Name>sendmessagetochildren</Name>
+      <DisplayName>Send Message To Children</DisplayName>
+      <Description>Send message to child iframes via postMessage</Description>
+      <Parameters>
+        <Parameter DataType="Text">
+          <Name>message</Name>
+          <DisplayName>Message</DisplayName>
+          <Description>Message</Description>
+          <IsRequired>true</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messagetype</Name>
+          <DisplayName>Message Type</DisplayName>
+          <Description>Message Type</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messageid</Name>
+          <DisplayName>Message Id</DisplayName>
+          <Description>Message Id</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Boolean">
+          <Name>broadcast</Name>
+          <DisplayName>Broadcast</DisplayName>
+          <Description>Broadcast</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>callback</Name>
+          <DisplayName>Callback</DisplayName>
+          <Description>JavaScript message to be called on receiving page</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+      </Parameters>
+    </Method>
+    <Method ResultType="Text">
+      <Name>sendmessage</Name>
+      <DisplayName>Send Message</DisplayName>
+      <Description>Send message to child iframes via postMessage</Description>
+      <Parameters>
+        <Parameter DataType="Text">
+          <Name>message</Name>
+          <DisplayName>Message</DisplayName>
+          <Description>Message</Description>
+          <IsRequired>true</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messagetype</Name>
+          <DisplayName>Message Type</DisplayName>
+          <Description>Message Type</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>messageid</Name>
+          <DisplayName>Message Id</DisplayName>
+          <Description>Message Id</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Boolean">
+          <Name>broadcast</Name>
+          <DisplayName>Broadcast</DisplayName>
+          <Description>Broadcast</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>callback</Name>
+          <DisplayName>Callback</DisplayName>
+          <Description>JavaScript message to be called on receiving page</Description>
+          <IsRequired>false</IsRequired>
+        </Parameter>
+      </Parameters>
+    </Method>
+  </Methods>
+
+
   <!--<Properties> defines the various properties that the control may have. These are usually shown in the 
   Properties tab when you design the form and select the control
 	-->
@@ -97,9 +215,8 @@ See the file below for samples and descriptions of the values you may have in th
       <InitialValue>Text</InitialValue>
     </Prop>
     <!--ControlText is a custom property for the control. You can reference control properties in the code behind, see .cs file for example -->
-    <Prop ID="ControlText"  friendlyname="Control Text" type="string" category="Detail" refreshdisplay="true">
-      <!--you can set a default value by setting the <Value> for the <Prop>-->
-    </Prop>
+    <!--<Prop ID="ControlText"  friendlyname="Control Text" type="string" category="Detail" refreshdisplay="true">
+    </Prop>-->
     <!--Value is the "default" value for the control, retrieved with control.Value in the .js code-->
     <Prop ID="Value" friendlyname="Value" type="string" category="Detail" refreshdisplay="true"/>
     <!--IsVisible is used to show or hide the control -->
@@ -111,24 +228,27 @@ See the file below for samples and descriptions of the values you may have in th
       <Value>true</Value>
     </Prop>
     <!--OutputDebugInfo is a custom property used to show the controls properties at runtime for debugging purposes. -->
-    <Prop ID="OutputDebugInfo" friendlyname="Output Debug Info" type="bool" category="General">
+    <!--<Prop ID="OutputDebugInfo" friendlyname="Output Debug Info" type="bool" category="General">
       <Value>true</Value>
-    </Prop>
+    </Prop>-->
 
     
-    <Prop ID="MessageId" friendlyname="Message Id" type="string" category="Detail" refreshdisplay="false" inputlength="255" >
+    <Prop ID="MessageId" friendlyname="Message Id" type="string" category="Message" refreshdisplay="false" inputlength="255" >
       <Value></Value>
     </Prop>
-    <Prop ID="MessageType" friendlyname="Message Type" type="string" category="Detail" refreshdisplay="false" inputlength="4000">
+    <Prop ID="MessageType" friendlyname="Message Type" type="string" category="Message" refreshdisplay="false" inputlength="4000">
       <Value></Value>
     </Prop>
-    <Prop ID="Callback" friendlyname="Callback" type="string" category="Detail" refreshdisplay="false" inputlength="255">
+    <!--<Prop ID="MessageDateTime" friendlyname="Message DateTime" type="string" category="Message" refreshdisplay="false" inputlength="25">
+      <Value></Value>
+    </Prop>-->
+    <Prop ID="Callback" friendlyname="Callback" type="string" category="Message" refreshdisplay="false" inputlength="255">
       <Value></Value>
     </Prop>
-    <Prop ID="FromUrl" friendlyname="From Url" type="string" category="Detail" refreshdisplay="false" inputlength="4000">
+    <!--<Prop ID="FromUrl" friendlyname="From Url" type="string" category="Message" refreshdisplay="false" inputlength="4000">
       <Value></Value>
-    </Prop>
-    <Prop ID="Rebroadcast" friendlyname="Rebroadcast" type="bool" category="Detail" refreshdisplay="false">
+    </Prop>-->
+    <Prop ID="Broadcast" friendlyname="Broadcast" type="bool" category="Message" refreshdisplay="false">
       <Value>false</Value>
     </Prop>
 

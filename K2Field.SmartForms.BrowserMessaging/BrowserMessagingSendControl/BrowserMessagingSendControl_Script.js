@@ -118,6 +118,78 @@
             StyleHelper.setStyles(options, styles);
         },
 
+        execute: function (objInfo) {
+            //debugger;
+            // The control id can be retrieved as follows
+            var controlId = objInfo.CurrentControlID;
+            // methodParameters is an object mapping the property names to their values
+            var parameters = objInfo.methodParameters;
+
+            var parameterNames = [];
+            var method = objInfo.methodName;
+
+            var pMessage = "";
+            var pMessageId = "";
+            var pMessageType = "";
+            var pCallback = "";
+            var pBroadcast = false;
+
+            if (parameters.hasOwnProperty("message")) {
+                pMessage = parameters["message"];                
+            }
+
+            if (parameters.hasOwnProperty("messagetype")) {
+                pMessageType = parameters["messagetype"];
+            }
+
+            if (parameters.hasOwnProperty("messageid")) {
+                pMessageId = parameters["messageid"];
+            }
+
+            if (parameters.hasOwnProperty("callback")) {
+                pCallback = parameters["callback"];
+            }
+
+            if (parameters.hasOwnProperty("broadcast")) {
+                pBroadcast = parameters["broadcast"];
+            }
+
+            var x = {
+                'message': pMessage,
+                'messageId': pMessageId,
+                'messageType': pMessageType,
+                'fromUrl': window.location.href,
+                'broadcast': pBroadcast,
+                'callback': pCallback,
+                'messageDateTime': Date.now()
+            };
+
+            var data = JSON.stringify(x);
+            switch (method) {
+                case "sendmessagetoparent":
+                    window.parent.postMessage(data, "*");
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnMessageSent');
+                    break;
+                case "sendmessagetochildren":
+                    var frames = $('iframe');
+                    for (var i = 0; i < frames.length; i++) {
+                        frames[i].contentWindow.postMessage(data, '*');
+                    }
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnMessageSent');
+                    break;
+                case "sendmessage":
+                    window.parent.postMessage(JSON.stringify(x), "*");
+                    var frames = $('iframe');
+                    for (var i = 0; i < frames.length; i++) {
+                        frames[i].contentWindow.postMessage(data, '*');
+                    }
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnMessageSent');
+                    break;
+            }
+            console.log(x);
+            return data;
+        },
+
         _sendPostMessageToParent: function (objInfo) {
 
             var instance = K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl._getInstance(objInfo.CurrentControlId);
@@ -128,8 +200,9 @@
                 'messageId': $(instance).attr("messageid"),
                 'messageType': $(instance).attr("messagetype"),
                 'fromUrl': window.location.href,
-                'broadcast': $(instance).attr("rebroadcast"),
-                'callback': $(instance).attr("callback")
+                'broadcast': $(instance).attr("broadcast"),
+                'callback': $(instance).attr("callback"),
+                'messageDateTime': Date.now()
             };
             window.parent.postMessage(JSON.stringify(x), "*");
 
@@ -145,8 +218,9 @@
                 'messageId': $(instance).attr("messageid"),
                 'messageType': $(instance).attr("messagetype"),
                 'fromUrl': window.location.href,
-                'broadcast': $(instance).attr("rebroadcast"),
-                'callback': $(instance).attr("callback")
+                'broadcast': $(instance).attr("broadcast"),
+                'callback': $(instance).attr("callback"),
+                'messageDateTime' : Date.now()
             };
             //$('#' + objInfo.CurrentControlId).data("messageid").value
             K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl._broadcastPostMessageToChildren(JSON.stringify(x));
@@ -176,13 +250,13 @@ $(document).ready(function () {
     //(Note that custom controls created with the SDK have .SFC as the class)
     //you could also use event binding, if preferred 
 
-    $(document).delegate('.SFC.K2Field.SmartForms.BrowserMessaging-BrowserMessagingSendControl-Control', 'click.Control', function (e) {
-        //alert("control " + this.id + " clicked");
-        raiseEvent(this.id, 'Control', 'OnClick');
-    });
+    //$(document).delegate('.SFC.K2Field.SmartForms.BrowserMessaging-BrowserMessagingSendControl-Control', 'click.Control', function (e) {
+    //    //alert("control " + this.id + " clicked");
+    //    raiseEvent(this.id, 'Control', 'OnClick');
+    //});
 
-    $(document).delegate(".SFC.K2Field.SmartForms.BrowserMessaging-BrowserMessagingSendControl-Control", "change.Control", function (e) {
-        //alert("control " + this.id + " changed");
-        raiseEvent(this.id, 'Control', 'OnChange');
-    });
+    //$(document).delegate(".SFC.K2Field.SmartForms.BrowserMessaging-BrowserMessagingSendControl-Control", "change.Control", function (e) {
+    //    //alert("control " + this.id + " changed");
+    //    raiseEvent(this.id, 'Control', 'OnChange');
+    //});
 });
