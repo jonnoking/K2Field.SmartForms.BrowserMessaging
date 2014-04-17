@@ -64,8 +64,9 @@ See the file below for samples and descriptions of the values you may have in th
   -->
   <Events>
     <Event>OnMessageSent</Event>
+    <Event>OnAppResizeSent</Event>
   </Events>
-  
+
   <!--<DefaultEventName> is the default event that the Rules composer will select when the designer creates a rule for the control-->
   <DefaultEventName>OnMessageSent</DefaultEventName>
 
@@ -184,13 +185,39 @@ See the file below for samples and descriptions of the values you may have in th
         </Parameter>
       </Parameters>
     </Method>
+    <Method ResultType="Text">
+      <Name>resizeapp</Name>
+      <DisplayName>Resize App Part</DisplayName>
+      <Description>Send message to resize containing app part</Description>
+      <Parameters>
+        <Parameter DataType="Text">
+          <Name>width</Name>
+          <DisplayName>Width</DisplayName>
+          <Description>Width</Description>
+          <IsRequired>true</IsRequired>
+        </Parameter>
+        <Parameter DataType="Text">
+          <Name>height</Name>
+          <DisplayName>Height</DisplayName>
+          <Description>Height</Description>
+          <IsRequired>true</IsRequired>
+        </Parameter>
+      </Parameters>
+    </Method>
+    <Method ResultType="Text">
+      <Name>resizeapptopage</Name>
+      <DisplayName>Resize App Part to Page Size</DisplayName>
+      <Description>Send message to resize containing app part to the size of the SmartForms page</Description>
+      <Parameters>
+      </Parameters>
+    </Method>
   </Methods>
 
 
   <!--<Properties> defines the various properties that the control may have. These are usually shown in the 
   Properties tab when you design the form and select the control
 	-->
-	<!--<Prop> is a property in the Properties collection. It supports the following attributes:
+  <!--<Prop> is a property in the Properties collection. It supports the following attributes:
     ID: the unique name for the property
     setFunction: which function in the .js file should be called to set the value of the property at design time
     friendlyName: the display name of the property in the design tool
@@ -210,7 +237,7 @@ See the file below for samples and descriptions of the values you may have in th
   <Properties>
     <!--ControlName is the Controls name (identifier) -->
     <Prop ID="ControlName" ValidationPattern="\S" ValidationMessage="InvalidName" refreshdisplay="true" DesignerValidate="SourceCode.Forms.Designers.validateControlName" friendlyname="Name" type="string" category="Detail" inputlength="255" />
-	<!--"DataType" is a property that tells smartforms runtime what the controls data type is-->
+    <!--"DataType" is a property that tells smartforms runtime what the controls data type is-->
     <Prop ID="DataType" setFunction="SetDataType" friendlyname="Data Type" type="drop" category="Detail" refreshdisplay="true" getDropItemsFunction="getDataTypesForControl" SelectionValue="" SelectionText="" inputlength="255">
       <InitialValue>Text</InitialValue>
     </Prop>
@@ -232,7 +259,7 @@ See the file below for samples and descriptions of the values you may have in th
       <Value>true</Value>
     </Prop>-->
 
-    
+
     <Prop ID="MessageId" friendlyname="Message Id" type="string" category="Message" refreshdisplay="false" inputlength="255" >
       <Value></Value>
     </Prop>
@@ -263,7 +290,7 @@ See the file below for samples and descriptions of the values you may have in th
          refreshdisplay="true"
          DesignerSet="SourceCode.Forms.Designers.View.Styles._showEditStyles" />
   </Properties>
- 
+
   <!--<Styles> describes which styles can be applied to the control. 
       In this sample we allow all styles, but you can remove the styles you do not want to expose
 	-->

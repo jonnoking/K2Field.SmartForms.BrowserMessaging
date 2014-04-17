@@ -128,6 +128,9 @@
             var parameterNames = [];
             var method = objInfo.methodName;
 
+            // MS recommends that App Parts sizes be in increments of 30
+            var step = 30;
+
             var pMessage = "";
             var pMessageId = "";
             var pMessageType = "";
@@ -135,7 +138,7 @@
             var pBroadcast = false;
 
             if (parameters.hasOwnProperty("message")) {
-                pMessage = parameters["message"];                
+                pMessage = parameters["message"];
             }
 
             if (parameters.hasOwnProperty("messagetype")) {
@@ -185,6 +188,52 @@
                     }
                     raiseEvent(objInfo.CurrentControlID, 'Control', 'OnMessageSent');
                     break;
+                case "resizeapp":
+                    var pHeight = "";
+                    if (parameters.hasOwnProperty("height")) {
+                        pHeight = parameters["height"];
+                    }
+                    var pWidth = "";
+                    if (parameters.hasOwnProperty("width")) {
+                        pWidth = parameters["width"];
+                    }
+
+                    var newHeight1 = Math.floor(pHeight / step) * step +
+                        step * Math.ceil((pHeight / step) - Math.floor(pHeight / step));
+
+                    var y = {
+                        'message': pWidth,
+                        'messageId': newHeight1,
+                        'messageType': "AppPartResize",
+                        'fromUrl': window.location.href,
+                        'broadcast': "false",
+                        'callback': "",
+                        'messageDateTime': Date.now()
+                    };
+                    window.parent.postMessage(JSON.stringify(y), "*");
+                    data = JSON.stringify(y);
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnAppResizeSent');
+                    break;
+                case "resizeapptopage":
+
+                    var apHeight = $('body').outerHeight();
+
+                    var newHeight = Math.floor(apHeight / step) * step +
+                        step * Math.ceil((apHeight / step) - Math.floor(apHeight / step));
+
+                    var y = {
+                        'message': "{width}",
+                        'messageId': newHeight,
+                        'messageType': "AppPartResizeToPage",
+                        'fromUrl': window.location.href,
+                        'broadcast': "false",
+                        'callback': "",
+                        'messageDateTime': Date.now()
+                    };
+                    window.parent.postMessage(JSON.stringify(y), "*");
+                    data = JSON.stringify(y);
+                    raiseEvent(objInfo.CurrentControlID, 'Control', 'OnAppResizeSent');
+                    break;
             }
             console.log(x);
             return data;
@@ -220,7 +269,7 @@
                 'fromUrl': window.location.href,
                 'broadcast': $(instance).attr("broadcast"),
                 'callback': $(instance).attr("callback"),
-                'messageDateTime' : Date.now()
+                'messageDateTime': Date.now()
             };
             //$('#' + objInfo.CurrentControlId).data("messageid").value
             K2Field.SmartForms.BrowserMessaging.BrowserMessagingSendControl._broadcastPostMessageToChildren(JSON.stringify(x));
