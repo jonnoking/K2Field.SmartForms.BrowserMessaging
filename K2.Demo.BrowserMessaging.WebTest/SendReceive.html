@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Browser Messaging Test</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="Content/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="Content/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+<!--    <link href="theme.css" rel="stylesheet">-->
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body role="document">
+
+    <!-- Fixed navbar -->
+<!--    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Bootstrap theme</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>-->
+
+    <div class="container theme-showcase" role="main">
+
+
+    <div class="page-header">
+        <h1></h1>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+              <div class="alert alert-success" id="msgHeader">        
+                <b>&nbsp;</b>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+<!--          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel title</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>-->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Messages Received</h3>
+            </div>
+            <div class="panel-body">
+              <ul id="msgReceived"></ul>
+            </div>
+          </div>
+            </div>
+          <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Send Message</h3>
+            </div>
+            <div class="panel-body">
+              <input type="text" id="txtMessage" class="form-control"  />
+                <br />
+                <button id="btnSend" class="btn btn-lg btn-default">Send</button>
+            </div>
+          </div>
+        </div><!-- /.col-sm-6 -->
+
+       
+          </div>
+       
+
+
+
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+      <script src="Scripts/jquery-2.1.1.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    
+    //var x = {
+    //    'message': 'someMessage',
+    //    'messageId': 'someMessageId',
+    //    'messageType': 'someMessageType',
+    //    'fromUrl': window.location.href,
+    //    'broadcast': 'true',
+    //    'callback': 'someJavaScriptMethodToExecuteOnReceivingPage',
+    //    'messageDateTime': Date.now()
+    //};
+
+    $(document).ready(function () {
+        regMessageReceive();
+    });
+
+    $('#btnSend').click(function () {
+
+        var x = {
+            'message': $('#txtMessage').val(),
+            'messageId': 'x0001',
+            'messageType': 'fromHTMLPage',
+            'fromUrl': window.location.href,
+            'broadcast': 'true',
+            'callback': '',
+            'messageDateTime': Date.now()
+        };
+
+        window.parent.postMessage(JSON.stringify(x), "*");
+        $('#txtMessage').val('');
+
+    });
+
+    function regMessageReceive() {
+        // for older Internet Explorer
+        if (window.attachEvent) {
+            attachEvent("onmessage", receiveMessage);
+        } else {
+
+            window.addEventListener("message", receiveMessage, false);
+        }
+    }
+
+    function receiveMessage(e) {
+
+        // assuming message is in correct format
+        var msg = JSON.parse(e.data);
+        if (msg.fromUrl != window.location.href) {
+            $('#msgReceived').prepend('<li>' + msg.message + '</li>');
+        }
+
+    }
+
+    //if (msg.fromUrl != window.location.href) {
+    //}
+
+
+    function receiveMessage1(e) {
+
+        //if (e.data.startsWith("<message")) {
+        //    //window.postMessage(e.data, "*");
+        //    console.log("RECEIVED RESIZE: " + e.data);
+
+        //    // call the standard resize method on a SP page
+        //    if (SPAppIFramePostMsgHandler) {
+        //        SPAppIFramePostMsgHandler(e)
+        //    }
+
+        //    return;
+        //}
+
+        var data = e.data;
+        var origin = e.origin;
+        if (isJSON(data)) {
+
+            var d = parseMessage(e.data);
+            if (d.messageType == "LoadDetails") {
+                $('#msgHeader').html("<b>" + d.message + "</b>");
+            }
+
+            //$(window).trigger("browserMessageReceived", data);
+            if (d.broadcast == true || d.broadcast == "true" || d.broadcast == "True") {
+                broadcastmessages(e);
+            }
+
+
+            if (enableDebug.toLowerCase() == "true") {
+                LogPostMessage(d['message'] + " - " + d['fromUrl']);
+            }
+
+        } else {
+
+            //$(window).trigger("browserMessageReceived", data);
+
+            if (enableDebug.toLowerCase() == "true") {
+                LogPostMessage(data);
+            }
+
+            if (broadcastStrings.toLowerCase() == "true") {
+                broadcastmessages(e);
+            }
+
+        }
+
+    }
+
+    function parseMessage(data) {
+        if (isJSON(data)) {
+            return JSON.parse(data);
+        }
+    }
+
+    // needs to be improved
+    function isJSON(data) {
+        if (data.substring(0, 1) === '{') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function broadcastmessages(e) {
+        var frames = $('iframe');
+        for (var i = 0; i < frames.length; i++) {
+
+            if (isJSON(e.data)) {
+                // a JSON string
+                var d = JSON.parse(e.data);
+
+                // change broadcast status so that message does't get echoed unncessarily back to this page
+                //d.broadcast = "false";
+
+                //frames[i].contentWindow.postMessage(e.data, '*');
+                // don't broadcast back to messages origin url
+                if (checkBroadcastUrl(d.fromUrl)) {
+                    frames[i].contentWindow.postMessage(JSON.stringify(d), '*');
+                }
+            }
+            else {
+                // check app part property - broadcast strings
+
+                if (broadcastStrings.toLowerCase() == "true") {
+                    frames[i].contentWindow.postMessage(e.data, '*');
+                }
+            }
+        }
+    }
+
+    function checkBroadcastUrl(originUrl, frameUrl) {
+        return true;
+    }
+
+    function LogPostMessage(message) {
+        //$('#log').prepend("<li>" + message + "</li>");
+        console.log(message);
+    }
+
+
+</script>
+
+  </body>
+</html>
